@@ -3,6 +3,8 @@
 require 'oystercard'
 
 describe Oystercard do
+  
+  let(:station) { double("station") }
 
   it 'checks that a new card has a balance of zero' do
     expect(subject.balance).to eq(0)
@@ -31,14 +33,9 @@ describe Oystercard do
 
   context 'testing touch in/ touch out and card state' do
 
-    it 'initial in_journey state is false' do
-      new_card = Oystercard.new
-      expect(new_card).not_to be_in_journey
-    end
-
     it 'changes state of card when touched in' do
       subject.top_up(10)
-      subject.touch_in
+      subject.touch_in(station)
       expect(subject).to be_in_journey
     end
 
@@ -46,14 +43,19 @@ describe Oystercard do
       expect(subject).not_to be_in_journey
     end
 
+    it 'records the entry station on touch in' do
+      subject.top_up(10)
+      subject.touch_in(station)
+      expect(subject.entry_station).to eq(station)
+    end
+
   end
 
   context 'tests around minimum balance' do
 
     it 'should raise and error if balance is below minimum when tapped in' do
-      expect {subject.touch_in}.to raise_error('Insufficient funds')
+      expect {subject.touch_in(station)}.to raise_error('Insufficient funds')
     end
   end
-
 
 end
