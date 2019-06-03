@@ -22,8 +22,9 @@ describe Oystercard do
 
   context 'tests that money can be deducted' do
 
-    it 'decrements the balance by 20' do
-      expect { subject.deduct(20) }.to change {subject.balance }.by(-20)
+    it 'deducts from balance when touched out' do
+      subject.top_up(10)
+      expect { subject.touch_out(10) }.to change { subject.balance }.by(-10)
     end
 
   end
@@ -50,7 +51,7 @@ describe Oystercard do
   context 'tests around minimum balance' do
 
     it 'should raise and error if balance is below minimum when tapped in' do
-      expect {subject.touch_in}.to raise_error('Insufficient funds')   
+      expect {subject.touch_in}.to raise_error('Insufficient funds')
     end
   end
 
