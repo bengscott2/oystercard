@@ -14,6 +14,8 @@ class Oystercard
     @balance += amount
   end
 
+  private
+
   def exceed?(amount)
     amount + @balance > DEFAULT_LIMIT
   end
