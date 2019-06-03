@@ -36,6 +36,7 @@ describe Oystercard do
     end
 
     it 'changes state of card when touched in' do
+      subject.top_up(10)
       subject.touch_in
       expect(subject).to be_in_journey
     end
@@ -45,4 +46,13 @@ describe Oystercard do
     end
 
   end
+
+  context 'tests around minimum balance' do
+
+    it 'should raise and error if balance is below minimum when tapped in' do
+      expect {subject.touch_in}.to raise_error('Insufficient funds')   
+    end
+  end
+
+
 end
