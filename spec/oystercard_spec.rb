@@ -3,7 +3,12 @@
 require 'oystercard'
 
 describe Oystercard do
-  
+
+  before(:each) do
+    @topped_up_card = Oystercard.new
+    @topped_up_card.top_up(50)
+  end
+
   let(:station) { double("station") }
 
   it 'checks that a new card has a balance of zero' do
@@ -26,7 +31,7 @@ describe Oystercard do
 
     it 'deducts from balance when touched out' do
       subject.top_up(10)
-      expect { subject.touch_out(10) }.to change { subject.balance }.by(-10)
+      expect { subject.touch_out(10, station) }.to change { subject.balance }.by(-10)
     end
 
   end
@@ -56,6 +61,21 @@ describe Oystercard do
     it 'should raise and error if balance is below minimum when tapped in' do
       expect {subject.touch_in(station)}.to raise_error('Insufficient funds')
     end
+  end
+
+  context 'the card can store journeys' do
+
+    it 'should have an empty list of journeys by default' do
+      new_card = Oystercard.new
+      expect(new_card.journeys).to be_empty
+    end
+
+    it 'should store a journey after completeing a touch in and touch out' do
+      @topped_up_card.touch_in(station)
+      @topped_up_card.touch_out(10, station)
+      expect(@topped_up_card.journeys).not_to be_empty
+    end
+
   end
 
 end
